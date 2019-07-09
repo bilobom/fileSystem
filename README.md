@@ -1,8 +1,9 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+## Mutaion Bug
 
-In the project directory, you can run:
+when adding a folder or file, the listings doesn't change, problems with mutation Sorry !! You can see with redux-devtool that the state is changing
+<img src="https://raw.githubusercontent.com/bilobom/fileSystem/master/bug.png" >
 
 ### `npm start`
 
