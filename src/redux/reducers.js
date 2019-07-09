@@ -35,8 +35,8 @@ const currentListingsReducer = createReducer([], {
     },
 
     "DELETE_LISTING": (currentListings, action) => {
-        currentListings.subListings = currentListings.subListings.filter(el => el !== action.payload)
-        delete currentListings[action.payload]
+        currentListings.subListings = currentListings.subListings.filter(el => el !== action.payload.name)
+        delete currentListings[action.payload.name]
     },
     "RENAME_LISTING": (currentListings, action) => {
         //rename it

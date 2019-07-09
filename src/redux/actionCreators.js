@@ -24,24 +24,25 @@
 //         payload:error.message
 //     }
 // }
-export const addListing=(name,type)=>{
+export const addListing = (name, type, pathArray)=>{
     return{
         type:'ADD_LISTING',
         payload:{
             name,
             type,
+            pathArray
         }
     }
 }
-export const deleteListing = (name) => {
+export const deleteListing = (name, pathArray) => {
     return {
         type: 'DELETE_LISTING',
-        payload: name
+        payload: { name, pathArray}
     }
 }
-export const renameListing=(name,newName)=>{
+export const renameListing = (name, newName, pathArray)=>{
     return {
         type: 'RENAME_LISTING',
-        payload: {name,newName}
+        payload: { name, newName, pathArray}
     }
 }

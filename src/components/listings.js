@@ -7,53 +7,137 @@ import { addListing, deleteListing, renameListing } from '../redux/actionCreator
 import { withStyles } from '@material-ui/styles';
 import OpenMenu from './openMenu';
 import RenameDialog from './renameDialog'
+const listingDummy = {
+  "/myFileSystem": {
+    listingName: "/MyFileSystem",
+    subListings: ["folder1", "folder2", "folder3", "file1.txt", "file2.pdf"],
+    "folder1": {
+      listingName: "folder1",
+      type: "folder",
+      meta: {},
+      subListings: ["folder1-1", "folder1-2", "folder1-3", "file1-1.txt", "file1-2.pdf"],
+      "folder1-1": {
+        listingName: "folder1-1",
+        subListings: ["folder1-1", "folder1-2", "folder1-3", "file1-1.txt", "file1-2.pdf"],
+        type: "folder",
+        meta: {}
+      },
+      "folder1-2": {
+        listingName: "folder1-2",
+        type: "folder",
+        meta: {}
+      },
+      "folder1-3": {
+        listingName: "folder1-3",
+        type: "folder",
+        meta: {}
+      },
+      "file1-1.txt": {
+        listingName: "file1-1.txt",
+        type: "file",
+        meta: {
+          fileSize: "",
+          extension: "txt"
+        }
+      },
+      "file1-2.pdf": {
+        listingName: "file1-2.txt",
+        type: "file",
+        meta: {
+          fileSize: "",
+          extension: "pdf"
+        }
+      },
 
+    },
+    "folder2": {
+      listingName: "folder2",
+      type: "folder",
+      meta: {}
+    },
+    "folder3": {
+      listingName: "folder3",
+      type: "folder",
+      meta: {}
+    },
+    "file1.txt": {
+      type: "file",
+      meta: {
+        fileSize: "",
+        extension: "txt"
+      }
+    },
+    "file2.pdf": {
+      type: "file",
+      meta: {
+        fileSize: "",
+        extension: "pdf"
+      }
+    }
+
+
+
+  }
+}
+const getNestedObject = (nestedObj, pathArr) => {
+  return pathArr.reduce((obj, key) =>
+    (obj && obj[key] !== 'undefined') ? obj[key] : undefined, nestedObj);
+}
 class Listings extends React.Component {
 
   state = {
     openRenameDialog: false,
     wichOne: '',
-    shownListings:{}
+    shownListings: { names: [] },
+    pathArray: ['/myFileSystem'],
   }
-  componentDidMount(){
-    const { pathname } = this.props.history.location;
-    console.log('mounted', pathname)
+  componentDidMount() {
+    this.updateListings()
   }
-  componentWillReceiveProps(nextProps){
-    const {currentListings}=nextProps
+  componentWillReceiveProps(nextProps) {
+    this.updateListings()
+  }
+  updateListings = () => {
+    const { currentListings } = this.props
+
     const { pathname } = this.props.history.location;
-    const pathnames=pathname.split('/')
-    console.log('pathName is ', pathname,pathnames)
-    this.setState({ shownListings: currentListings})
+
+    let pathArray = pathname.split('/')
+    pathArray[0] = '/myFileSystem'
+    pathArray = pathArray.filter(el => el != "")
+    const tobeshown = getNestedObject(currentListings, pathArray);
+
+    this.setState({ shownListings: tobeshown, pathArray })
   }
   handleListingClicked = (listingName) => {
-    console.log('folder or file opened')
-    this.props.history.push('/' + listingName)
+    if (this.state.shownListings[listingName].type == "folder")
+      this.props.history.push('/' + listingName)
+    else return
   }
   handleDelete = (name) => {
     console.log('delete', name)
-    this.props.deleteListing(name)
+    this.props.deleteListing(name,this.state.pathArray)
   }
   handleEditClicked = (name) => {
     console.log('rename', name)
     this.setState({ openRenameDialog: true, wichOne: name })
   }
   onRenamed = (name, newName) => {
-    this.props.renameListing(name, newName)
+    this.props.renameListing(name, newName,this.state.pathArray)
   }
   onNewListing = (name, type) => {
-    this.props.addListing(name, type)
+    this.props.addListing(name, type, this.state.pathArray)
   }
   render() {
     const { currentListings, classes } = this.props
-    const {shownListings}=this.state
+    const { shownListings } = this.state
     return (
       <div>
         <AppBar position="static" >
           <Grid container className={classes.toolbar}>
             <Grid item>
               <Typography variant="h6">
-                {currentListings.listingName}
+                {shownListings.listingName}
               </Typography>
             </Grid>
             <Grid item>
@@ -64,7 +148,7 @@ class Listings extends React.Component {
         <List
 
         >
-          {currentListings.subListings.map((name, index) => {
+          {shownListings.subListings && shownListings.subListings.map((name, index) => {
             return (
               <ListItem
                 key={index}
@@ -72,9 +156,9 @@ class Listings extends React.Component {
                 onClick={() => this.handleListingClicked(name)}
               >
                 <ListItemIcon>
-                  {currentListings[name].type == "folder" ? (<FolderIcon />) : (<Assignment />)}
+                  {shownListings[name].type == "folder" ? (<FolderIcon />) : (<Assignment />)}
                 </ListItemIcon>
-                  <ListItemText primary={name} />
+                <ListItemText primary={name} />
                 <ListItemSecondaryAction>
                   <IconButton onClick={() => this.handleDelete(name)}>
                     <Delete />
