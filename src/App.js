@@ -10,15 +10,12 @@ class App extends React.Component {
   render() {
 
     return (
-      <Switch>
-        <Route path="/:folderName" component={Listings} />
-      </Switch>
-
+      <Route path="/:folderName" component={Listings} />
     );
   }
 }
 const mapStateToProps = state => ({
   currentListings: state.currentListings
 })
-export default connect(mapStateToProps, {})(Listings)
+export default connect(mapStateToProps, {})(withRouter(Listings))
 
