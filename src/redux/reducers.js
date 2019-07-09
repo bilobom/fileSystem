@@ -32,6 +32,7 @@ const currentListingsReducer = createReducer([], {
                 extension: action.payload.extension
             }
         }
+        console.log('ADDING LISTING', currentListings)
     },
 
     "DELETE_LISTING": (currentListings, action) => {
