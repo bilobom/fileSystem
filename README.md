@@ -3,6 +3,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 ## Mutaion Bug
 
 when adding a folder or file, the listings doesn't change, problems with mutation Sorry !! You can see with redux-devtool that the state is changing
+upddate: fixed .
 <img src="https://raw.githubusercontent.com/bilobom/fileSystem/master/bug.png" >
 
 ### `npm start`

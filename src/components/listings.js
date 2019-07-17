@@ -22,21 +22,23 @@ class Listings extends React.Component {
     pathArray: ['0'],
   }
   componentDidMount() {
-    this.updateListings()
+    this.updateListings(this.props)
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps != this.props) this.updateListings()
+    this.updateListings(nextProps)
   }
-  updateListings = () => {
-    const { currentListings } = this.props
+  updateListings = (nextProps) => {
+    const { currentListings={} } = nextProps
 
     const { pathname } = this.props.history.location;
 
     let pathArray = pathname.split('/')
-    console.log('pathArray', pathArray)
+    
+    // console.log('pathArray', pathArray)
+
     pathArray = pathArray.filter(el => el != "")
     const tobeshown = getNestedObject(currentListings, pathArray);
-
+    console.log('TobeShown are ', tobeshown, "but currentListings is ", currentListings)
     this.setState({ shownListings: tobeshown, pathArray })
   }
   handleListingClicked = (listingName) => {
